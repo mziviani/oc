@@ -12,7 +12,7 @@
     "mongodb": "^2.1.16",
     "morgan": "^1.7.0",
     "object-assign":"4.1.0",
-    "async": "2.6.0",
+    "async": "2.6.0"
   },
   "engine": {
     "node": "*",
