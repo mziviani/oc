@@ -1,0 +1,148 @@
+<% include parziale/head %>
+
+
+
+        <div class="container-fluid border-red">
+          <div class="row">
+            <div class="col-sm-12" style="padding: 0px; width:100%; height:500px;" id="map">
+
+            </div>
+          </div>
+        </div>
+
+      <main class="container" id="search-category">
+        <div class="row">
+          <nav class="col-sm-12">
+            <ul>
+              <li><a href="/">home</a> <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span></li>
+              <li><%= percorsiObj[0]['title'] %></li>
+            </ul>
+          </nav>
+          <header class="col-sm-12">
+            <h2>percorsi <strong><%= percorsiObj[0]['title'] %></strong></h2>
+          </header>
+        </div>
+        <section class="row">
+          <!--cambiare col-sm-2 col-sm-push-10-->
+          <section class="col-sm-3 col-sm-push-9">
+            <section id="order" class="background-red">
+              <h4>Ordinamento</h4>
+              <select name="orderInput" id="orderInput" tabindex="1">
+                                                      <option value="0">Alfabetico Crescente</option>
+                                                      <option value="1">Alfabetico Decrescente</option>
+                                                      <option value="2">Lunghezza Crescente</option>
+                                                      <option value="3">Lunghezza Decrescente</option>
+                                                      <option value="4">Difficoltà Crescente</option>
+                                                      <option value="5">Difficoltà Decrescente</option>
+                                                    <!--  <option value="6">Vicini > distanti</option>
+                                                      <option value="7">distanti > vicini</option>-->
+                                                    </select>
+            </section>
+
+            <section id="filter" class="background-red">
+              <h4>Filtri</h4>
+                <div class="row">
+                    <div class="col-md-8 col-sm-12">
+                      <label for="lung">lunghezza max.</label>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                      <input type="text" name="lung" id="lung" tabindex="2" placeholder="Km" pattern="[0-9]{0,3}" maxlength="3"/><br/>
+                    </div>
+                    <div class="col-md-8 col-sm-12">
+                      <label for="pend">pendenza max.</label>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                      <input type="text" name="pend" id="pend" tabindex="3" placeholder="%" pattern="[0-9]{0,3}" maxlength="3"  /><br/>
+                    </div>
+                    <div class="col-md-8 col-sm-12">
+                      <label for="type">tipo di strada</label>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                      <select name="type" id="type" tabindex="4">
+                                                              <option value="0">tutte</option>
+                                                              <option value="1">asfalto</option>
+                                                              <option value="2">terra</option>
+                                                              <option value="3">ghiaia</option>
+                                                              <option value="4">misto</option>
+                                                            </select>
+                    </div>
+                    <div class="col-md-8 col-sm-12">
+                      <label for="diff">difficoltà</label>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <select id="diff" name="diff" tabindex="5">
+                                                              <option value="0">tutte</option>
+                                                              <option value="1">*</option>
+                                                              <option value="2">**</option>
+                                                              <option value="3">***</option>
+                                                            </select>
+                    </div>
+                </div>
+              <!--<label><input type="checkbox" name="bambini" value="1" tabindex="6" />vicino a me</label><br />-->
+              <label><input type="checkbox" name="vicino" value="1" tabindex="7"  />adatto ai bambini</label><br/>
+
+              <button type="button" tabindex="8">applica</button>
+
+            </section>
+
+            <!--categorie -->
+            <% var tabindex = 8; if(categoryObj!= undefined) { %>
+            <section id="cat" class="background-red">
+              <h4>Categorie</h4>
+              <ul>
+                <% categoryObj.forEach(function category(objCat) { %>
+                <li><a href="/<%= objCat._id%>" tabindex="<%= tabindex %>"><%= objCat['title']%></a></li>
+                <% tabindex++; });%>
+              </ul>
+            </section>
+            <%  }; %>
+          </section>
+
+          <!-- cambirrae in col-sm-10 -->
+        <article class="col-sm-9 col-sm-pull-3" id="result">
+            <div class="row">
+              <%  percorsiObj[0]['percorsi'].forEach(function percorsi(obj) {%>
+                <article class="col-sm-6 percorso" data-id="<%=obj._id%>" data-bambini="<%= obj.scheda.bambini %>" data-lat="<%= obj.coordinates[0][0] %>" data-lng="<%= obj.coordinates[0][1] %>">
+                    <a href="/<%= obj.scheda._idcategory + "/" + obj._id%>" tabindex="<%= tabindex %>">
+                      <h3><%= obj['scheda']['title'] %></h3>
+                        <section>
+                          <div class="row">
+                            <div class="col-md-9"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span> <%= obj['scheda']['txt_start'] %></div>
+                            <div class="lunghezza col-md-3"><strong><%= obj['scheda']['lunghezza'] %> Km</strong></div>
+                          </div>
+                            <div class="row dettagli">
+                              <div class="col-md-6">Difficoltà <% for (var i=1;i<4;i++) {%><span <% if (i<=obj['scheda']['difficolta']) {%>class="full"<%}; %>></span><%};%></div>
+                              <div class="col-md-6">Tempo <strong>0:00:00</strong></div>
+                              <div class="clearfix"></div>
+                              <div class="col-md-6">Pendenza <strong><%= obj['scheda']['pendenza'] %>%</strong></div>
+                              <div class="col-md-6">Strada <strong><%= obj['scheda']['strada'] %></strong></div>
+                            </div>
+                          <p><span class="glyphicon glyphicon-tags" aria-hidden="true"></span> <%= percorsiObj[0]['title']%></p>
+                      </section>
+                    </a>
+                  </article>
+                <% tabindex++; }); %>
+
+
+
+        </section>
+      </main>
+
+      <% include parziale/footer %>
+
+
+  <!-- inserire google analytics -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDHISEgt5-1Z6cK7pyntyeQ9ffd3TJa11k&callback=initMapCategory"></script>
+  <script src="/js/jquery.cookie.js"></script>
+  <script src="/js/bikeaway.js"></script>
+  <script>
+  $('document').ready(init);
+
+  function init() {
+    initCookie();
+    initCategory();
+  }
+  </script>
+  </body>
+</html>

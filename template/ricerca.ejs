@@ -1,0 +1,154 @@
+  <% include parziale/head %>
+
+
+        <div class="container-fluid border-red">
+          <div class="row">
+            <div class="col-sm-12" style="padding: 0px; width:100%; height:500px;" id="map">
+
+            </div>
+          </div>
+        </div>
+
+      <main class="container" id="search-category">
+        <div class="row">
+          <nav class="col-sm-12">
+            <ul>
+              <li><a href="/">home</a> <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span></li>
+              <li>cerca "<%= query %>"</li>
+            </ul>
+          </nav>
+          <header class="col-sm-12">
+            <h2>cerca <strong>"<%= query %>"</strong></h2>
+          </header>
+        </div>
+        <section class="row">
+          <!--cambiare col-sm-2 col-sm-push-10-->
+          <section class="col-sm-3 col-sm-push-9">
+            <!--categorie -->
+            <section id="side-search" class="background-red">
+              <h4>Cerca</h4>
+                <form action="/cerca" method="get">
+                  <input name="q" type="text" autocomplete="off"   pattern=".{3,}" tabindex="1"  required />
+                  <input type="submit" value="cerca percorso" tabindex="2">
+              </form>
+            </section>
+
+
+            <section id="order" class="background-red">
+              <h4>Ordinamento</h4>
+              <select name="orderInput" id="orderInput" tabindex="3">
+                                                      <option value="0">Alfabetico Crescente</option>
+                                                      <option value="1">Alfabetico Decrescente</option>
+                                                      <option value="2">Distanza Crescente</option>
+                                                      <option value="3">Distanza Decrescente</option>
+                                                      <option value="4">Difficoltà Crescente</option>
+                                                      <option value="5">Difficoltà Decrescente</option>
+                                                  <!--    <option value="6">Vicini > distanti</option>
+                                                      <option value="7">distanti > vicini</option>-->
+                                                    </select>
+            </section>
+
+            <section id="filter" class="background-red">
+              <h4>Filtri</h4>
+                <div class="row">
+                    <div class="col-md-8 col-sm-12">
+                      <label for="lung">lunghezza max.</label>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                      <input type="text" name="lung" id="lung" tabindex="4" placeholder="Km" pattern="[0-9]+{0,3}" maxlength="3"/><br/>
+                    </div>
+                    <div class="col-md-8 col-sm-12">
+                      <label for="pend">pendenza max.</label>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                      <input type="text" name="pend" id="pend" tabindex="5" placeholder="%" pattern="[0-9]+{0,3}" maxlength="3"  /><br/>
+                    </div>
+                    <div class="col-md-8 col-sm-12">
+                      <label for="type">tipo di strada</label>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                      <select name="type" id="type" tabindex="6">
+                                                              <option value="0">tutte</option>
+                                                              <option value="1">asfalto</option>
+                                                              <option value="2">terra</option>
+                                                              <option value="3">ghiaia</option>
+                                                              <option value="4">misto</option>
+                                                            </select>
+                    </div>
+                    <div class="col-md-8 col-sm-12">
+                      <label for="diff">difficoltà</label>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <select id="diff" name="diff" tabindex="7">
+                                                              <option value="0">tutte</option>
+                                                              <option value="1">*</option>
+                                                              <option value="2">**</option>
+                                                              <option value="3">***</option>
+                                                            </select>
+                    </div>
+                </div>
+              <!--<label><input type="checkbox" name="bambini" value="1" tabindex="8" />vicino a me</label><br />-->
+              <label><input type="checkbox" name="vicino" value="1" tabindex="9"  />adatto ai bambini</label>
+                <button type="button" tabindex="10">applica</button>
+
+            </section>
+
+
+          </section>
+
+          <!-- cambiarae in col-sm-10 -->
+          <article class="col-sm-9 col-sm-pull-3" id="result">
+            <div class="row">
+
+              <% var tabindex=11;if(serp==undefined) { %>
+              <div class="col-md-12" id="noResult">
+                <h2>La tua ricerca non ha prodotto nessun risultato</h2>
+              </div>
+              <% } else {
+                    serp.forEach(function category(percorsoObj) { %>
+
+                      <article class="col-sm-6 percorso" data-id="<%=percorsoObj['_id']%>" data-bambini="<%= percorsoObj['scheda']['bambini'] %>" data-lat="<%= percorsoObj['coordinates'][0][0]%>" data-lng="<%= percorsoObj['coordinates'][0][1]%>" >
+                          <a href="<%= percorsoObj['scheda']['_idcategory'] + '/' + percorsoObj['_id']+ "?type=search" %>" tabindex="<%= tabindex %>">
+                            <h3><%= percorsoObj['scheda']['title'] %></h3>
+                              <section>
+                                <div class="row">
+                                  <div class="col-md-9"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span> <%= percorsoObj['scheda']['txt_start'] %></div>
+                                  <div class="lunghezza col-md-3"><strong><%= percorsoObj['scheda']['lunghezza'] %> Km</strong></div>
+                                </div>
+                                  <div class="row dettagli">
+                                    <div class="col-md-6">Difficoltà <% for (var i=1;i<4;i++) {%><span <% if (i<=percorsoObj['scheda']['difficolta']) {%>class="full"<%}; %>></span><%};%></div>
+                                    <div class="col-md-6">Tempo <strong>0:00:00</strong></div>
+                                    <div class="clearfix"></div>
+                                    <div class="col-md-6">Pendenza <strong><%= percorsoObj['scheda']['pendenza'] %>%</strong></div>
+                                    <div class="col-md-6">Strada <strong><%= percorsoObj['scheda']['strada'] %></strong></div>
+                                  </div>
+                                <p><span class="glyphicon glyphicon-tags" aria-hidden="true"></span> <%= percorsoObj['categoria'][0]['title'] %></p>
+                            </section>
+                          </a>
+                        </article>
+
+                  <% tabindex++; });
+               } %>
+           </div>
+         </article>
+
+        </section>
+      </main>
+
+      <% include parziale/footer %>
+
+  <!-- inserire google analytics -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDHISEgt5-1Z6cK7pyntyeQ9ffd3TJa11k&callback=initMapCategory"></script>
+  <script src="/js/jquery.cookie.js"></script>
+  <script src="/js/bikeaway.js"></script>
+  <script>
+  $('document').ready(init);
+
+  function init() {
+    initCookie();
+    initCategory();
+  }
+  </script>
+  </body>
+</html>
