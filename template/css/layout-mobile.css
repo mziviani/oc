@@ -1,0 +1,537 @@
+/*test*/
+@media screen and (max-width:991px) {
+  /*body {
+    background-color: blue;
+  }*/
+  #search #search-field #search-advanced-view #search-advanced-options div:nth-child(1) input[type='text'],
+  #search #search-field #search-advanced-view #search-advanced-options div:nth-child(1) select,
+  #search #search-field #search-advanced-view #search-advanced-options div:nth-child(2) input[type='text'],
+  #search #search-field #search-advanced-view #search-advanced-options div:nth-child(2) select,
+  #search-category input[type='text'] {
+    height: auto;
+    margin-bottom: 3px;
+  /*   border-width: 2px;
+    border-style: solid;
+   border-color: rgba(0,0,0,0);*/
+    line-height: 2.2rem;
+    padding: 3px 5px 3px 5px;
+  }
+  #search #search-field #search-advanced-view #search-advanced-options div:nth-child(1) input[type='text']:focus,
+  #search #search-field #search-advanced-view #search-advanced-options div:nth-child(2) input[type='text']:focus,
+  #search-category input[type='text']:focus {
+    border: 2px solid #ffc752;
+  }
+  #search #search-field #search-advanced-view #search-advanced-options div input[type='checkbox'],
+  #search-category input[type='checkbox'],
+  #other-pins div.row div input[type='checkbox'] {
+    width: 20px;
+    height: 20px;
+  }
+  #search #search-field #search-advanced-view #search-advanced-options div:nth-child(1n+2) label {
+    margin-bottom: 5px;
+    display: inline-block;
+  }
+
+  #piede div.row section input[type='text'],
+  #piede div.row section input[type='email'] {
+    width: 100%;
+    height: auto;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+  #piede div.row section button,
+  #piede div.row section #mc-embedded-subscribe  {
+    width: 100%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    height: auto;
+  }
+/********** stili category ***********/
+  #search-category div nav ul li {
+    font-size: 1.5rem;
+  }
+  #search-category div nav ul li span {
+    font-size: 1rem;
+  }
+  #search-category header h2 {
+    font-size: 3rem;
+  }
+  #search-category #order,
+  #search-category #filter,
+  #search-category #cat,
+  #search-category #side-search {
+    font-size: 1.5rem;
+    line-height: 2.8rem;
+  }
+  #search-category h4  {
+    font-size: 1.5rem;
+  }
+  #search-category input[type='text'] {
+    text-align: left;
+  }
+  #search-category #side-search input[type='text'] {
+    width: 100%;
+    height: auto;
+  }
+  #search-category #side-search input[type='submit'] {
+    width: 100%;
+    color: #000;
+    background-image: none;
+    height: auto;
+    padding: 0px;
+
+  }
+  #search-category #side-search input[type='submit']:hover {
+    background-color: #ffe9ba;
+  }
+  #result #msgResult h2,
+  #result #noResult h2  {
+    font-size: 2.3rem;
+    margin-top: 50px;
+    margin-bottom: 50px;
+  }
+/*********************** scheda ************************/
+#other-pins div.row div {
+  font-size: 1.3rem;
+}
+#scheda #content p.tags,
+#scheda #content p.note,
+#scheda #content #dettagli,
+#scheda #content aside h3,
+#commenti div div #menu1,
+#commenti div div #menu,
+#commenti div div #menu2 a,
+#commenti .corpo-commento {
+  font-size: 1.3rem;
+  width: 100%;
+  display: table;
+  margin-bottom: 15px;
+}
+#commenti .corpo-commento .tappa {
+  width: 25px;
+  height: 25px;
+  float:left;
+}
+#commenti .corpo-commento .tappa + p {
+  float:right;
+  width: 93%;
+}
+#scheda #content aside h4 {
+  font-size: 1.6rem;
+}
+#scheda #content aside p {
+  font-size: 1.4rem;
+}
+#commenti header h2 {
+  font-size: 2.2rem;
+}
+
+#commenti div div #menu1 select,
+#commenti form select {
+  border-radius: 0px;
+}
+#commenti form input[type='submit']{
+  font-size: 1.3rem;
+  border-radius: 0px;
+}
+#commenti form {
+  font-size: 1.3rem;
+  line-height: 2.8rem;
+}
+#commenti form em {
+  font-size: 1.2rem;
+}
+#commenti form input,
+#commenti form textarea {
+  border-radius: 0px;
+  line-height: 2.5rem;
+  border-color: #999;
+  border-style: solid;
+  border-width: 1px;
+}
+#paginazione {
+  font-size: 1.8rem;
+}
+  /* stili dei percorsi short */
+  .percorso .row .lunghezza {
+    text-align: left;
+    margin-top: 32px;
+    font-size: 15px;
+  }
+  .percorso .row .lunghezza::before {
+    content: 'Lunghezza ';
+  }
+  .percorso .row .lunghezza div {
+    background-color: inherit;
+    display: inline;
+    width: auto;
+    font-weight: bold;
+  }
+  .percorso .row.dettagli {
+    margin-top: 3px;
+  }
+  .percorso .row .gps-txt {
+    font-size: 1.5rem;
+  }
+  /*.percorso:not(.highlight) section {
+    border-left: 1px solid #9d0029;
+    border-right: 1px solid #9d0029;
+    border-bottom: 1px solid #9d0029;
+  }
+  .percorso:not(.highlight) a h3,
+  .percorso:not(.highlight) a h4 {
+    border-top: 1px solid #9d0029;
+    border-left: 1px solid #9d0029;
+    border-right: 1px solid #9d0029;
+    padding-top: 8px;
+  }*/
+}
+
+
+/********* stili cell ****************/
+@media screen and (max-width:767px) {
+  body {
+    /*background-color: red;*/
+    font-size: 1rem;
+  }
+  #intestazione div {
+    text-align: center;
+  }
+  #search #search-title h1 {
+    font-size: 4rem ;
+  }
+  #search #search-field {
+    height: auto;
+    font-size: 0px;
+  }
+  #search #search-field #search-field-group {
+    position: static;
+    text-align: left;
+    width: 88%;
+    height: 40px;
+  }
+  #search #search-field #search-field-group span {
+    display: none;
+  }
+  #search #search-field #search-field-group input[name="q"] {
+    width: 100%;
+    padding-left: 5px;
+  }
+  #search #search-field input[type="submit"] {
+    font-size: 1.6rem;
+    color:rgba(0,0,0,0);
+    width: 12%;
+    background-image: url('../images/search-icon.svg');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 30px 30px;
+  }
+  #search #search-field #search-field-group #tips {
+    display: none;
+}
+#search #search-field #search-advanced-view a {
+  color: #fff;
+  width: 100%;
+  font-size: 1.5rem;
+  padding: 10px 0px 10px 0px;
+}
+#search #search-field #search-advanced-view a::before {
+  content: "filtri avanzati";
+}
+#search #search-field #search-advanced-view a.remove::before {
+  content: "rimuovi filtri";
+}
+#search #search-field #search-advanced-view a span {
+  display: none;
+}
+  #search #search-field #search-advanced-view {
+    position: static;
+    display: block;
+    font-size: 2rem;
+    width: 100%;
+    height: auto;
+    margin-bottom: 30px;
+  }
+
+  #search #search-field #search-advanced-view #search-advanced-options {
+    position: static;
+    display: block;
+    top: auto;
+    right: auto;
+    width: 100%;
+    font-size: 1.5rem;
+    line-height: 2.4rem;
+    height: auto;
+  }
+  #search #search-field #search-advanced-view #search-advanced-options div:nth-child(1) label,
+  #search #search-field #search-advanced-view #search-advanced-options div:nth-child(2) label {
+    width: 70%;
+  }
+  #search #search-field #search-advanced-view #search-advanced-options div:nth-child(1) input[type='text'],
+  #search #search-field #search-advanced-view #search-advanced-options div:nth-child(1) select,
+  #search #search-field #search-advanced-view #search-advanced-options div:nth-child(2) input[type='text'],
+  #search #search-field #search-advanced-view #search-advanced-options div:nth-child(2) select {
+    width: 30%;
+    height: 30px;
+  }
+  #search #search-field #search-advanced-view #search-advanced-options div input[type='checkbox'],
+  #search-category input[type='checkbox'],
+  #other-pins div.row div input[type='checkbox'] {
+    width: 25px;
+    height: 25px;
+  }
+    #search #search-field #search-advanced-view #search-advanced-options div:nth-child(2) label,
+    #search #search-field #search-advanced-view #search-advanced-options div:nth-child(3) label {
+      margin-bottom: 10px;
+    }
+
+    #search #search-field #search-advanced-view #search-advanced-options div:nth-child(2) {
+      margin-top: 0px;
+      padding-top:20px;
+    }
+
+    /************* definire i campi di search ***********/
+  #evidenza header h2,
+  #percorsi header h2,
+  #informativo header h2 {
+
+    font-size: 3.5rem;
+  }
+
+  #informativo p {
+      font-size: 1.3rem
+  }
+  /********** definizione percorsi short ****************/
+  .percorso {
+    font-size: 2rem;
+    margin-bottom: 30px;
+  }
+  .percorso h3,
+  .percorso h4 {
+    height: auto;
+    padding: 10px 5px 10px 5px;
+    font-size: 3rem;
+    line-height: 3.5rem;
+  }
+  .percorso section {
+    padding: 12px 0px 10px 10px;
+  }
+
+  .percorso .row .lunghezza {
+    font-size: 2rem;
+  }
+  .percorso .row.dettagli {
+    font-size: 2rem;
+  }
+  .percorso .row.dettagli div:nth-child(1) span{
+    width: 15px;
+    height: 15px;
+  }
+  .percorso p {
+    font-size: 1.5rem;
+    margin-top: 20px;
+  }
+
+  /********** definizione header ***************/
+  /* stili percorsi home*/
+  #percorsi article.row {
+    display: block;
+  }
+  #percorsi article.row > div {
+    display: block;
+  }
+  #percorsi article.row > div header {
+    height: 300px;
+  }
+  #percorsi article.row > div header a {
+    width: 100%;
+    color: #000;
+  }
+  #percorsi article.row > div header a:hover {
+    text-decoration: none;
+  }
+  #percorsi article.row > div header a h3 {
+    background-color: rgba(0,0,0,0.75);
+    color: #fff;
+    font-weight: bold;
+    font-size: 22px;
+    min-height: 51px;
+    padding: 3px 0px 0px 5px;
+    margin: 0px;
+  }
+  #percorsi article.row > div header a div {
+    min-height: 29px;
+    background-color: #ffc752;
+    font-size: 15px;
+    padding: 3px 0px 0px 5px;
+    font-weight: normal;
+    background-image: url('../images/freccia-dx.svg');
+    background-repeat: no-repeat;
+    background-size: 15px 15px;
+    background-position: 98% center;
+    padding-right: 15px;
+  }
+  #percorsi article.row > div header a:hover div,
+  #percorsi article.row > div:focus header a div {
+    background-color: #fff1d4;
+  }
+
+  /******** piede ************/
+  #piede div.row {
+    margin-top: 0px;
+  }
+
+  #piede div.row section:last-child h4 {
+    text-align: center;
+    margin-top: 32px;
+  }
+  #piede div.row section h4 {
+    margin-top: 16px;
+    font-size: 2rem;
+  }
+
+  #piede div.row section:last-child h5 {
+    margin-top:16px;
+    text-align: center;
+    font-size: 2rem;
+  }
+  #piede div.row section ul li {
+    text-align: center;
+  }
+
+  #piede div.row section ul li a {
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  #piede div.row section #social + ul {
+    text-align: center;
+  }
+  #piede div.row section:last-child #social + ul li a img {
+    max-width: 40px;
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+  #piede div.row section p {
+    font-size: 1.5rem;
+  }
+
+  #piede footer div p {
+    font-size: 1.5rem;
+    margin-top: 50px;
+  }
+  #piede div.row section input[type='text'],
+  #piede div.row section input[type='email'] {
+    font-size: 2rem;
+  }
+  #piede div.row section button,
+  #piede div.row section #mc-embedded-subscribe {
+    font-size: 2rem;
+  }
+  #annunci {
+    margin-bottom: 20px;
+  }
+  /******************* category *********/
+  #search-category h4  {
+    font-size: 2rem;
+  }
+  #search-category #order,
+  #search-category #filter,
+  #search-category #cat,
+  #search-category #side-search {
+    font-size: 2rem;
+    line-height: 4rem;
+  }
+  /***************** scheda **************/
+  #other-pins div div a {
+    margin-bottom: 16px;
+    font-size: 1.5rem;
+    color: #fff;
+    display: block;
+    height: auto;
+    float: left;
+    width: 100%;
+    padding-top: 4px;
+    font-weight: normal;
+
+  }
+  #other-pins div div a span {
+    font-size: 2.7rem;
+    color: #fff;
+    margin-right: 8px;
+    float: left;
+    margin-top: -4px;
+  }
+
+  #other-pins label {
+    display: block;
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+  }
+  #scheda #content p,
+  #scheda #content #dettagli {
+    font-size: 1.8rem;
+  }
+  #scheda #content p.tags
+  {
+    font-size: 1.5rem;
+  }
+  #scheda #content p.note {
+    font-size: 1.7rem;
+  }
+  #scheda #content aside h3 {
+    font-size: 1.7rem;
+  }
+  #commenti div div #menu1{
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+  #commenti div div #menu1,
+  #commenti div div #menu,
+  #commenti div div #menu2 a,
+  #commenti div div #menu1 select {
+    font-size: 1.8rem;
+    height: auto;
+  }
+  #commenti form {
+    font-size: 1.8rem;
+    line-height: 3.8rem;
+  }
+  #commenti form input[type='text'],
+  #commenti form input[type='email'],
+  #commenti form textarea {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+  }
+  #commenti form input[type='submit'] {
+    font-size: 1.8rem;
+    height: auto;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+  #scheda #content #commenti  #listacommenti .corpo-commento,
+  #scheda #content #commenti  #listacommenti .corpo-commento p {
+    font-size: 1.6rem;
+  }
+  /* pubblicità */
+  #adv div {
+
+    margin-bottom: 20px;
+  }
+  #adv h5 {
+    font-size: 1.5rem;
+  }
+
+  #adv div a h6 {
+    font-size: 2rem;
+
+  }
+
+  #adv div a p {
+    font-size: 1.8rem;
+
+  }
+
+
+}

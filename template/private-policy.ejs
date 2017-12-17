@@ -1,0 +1,107 @@
+<% include parziale/head %>
+
+      <section class="background-image-home border-red" id="search-background">
+        <header class="container"  id="search">
+          <div class="row">
+            <div class="col-sm-12" id="search-title">
+              <h1>Scopri Verona e provincia su 2 ruote</h1>
+            </div>
+           <div class="col-sm-12" id="search-field">
+               <form method="get" action="/cerca">
+               <div id="search-field-group">
+                  <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                  <input name="q" type="text" autocomplete="off" placeholder="Inserisci una parola o location" size="40" pattern=".{3,}" tabindex="1"  required />
+
+                </div>
+                <input type="submit" value="cerca percorso" tabindex="16">
+                <div id="search-advanced-view">
+                <a href="#" tabindex="5"><span class="glyphicon glyphicon-option-horizontal" aria-hidden="true"></span></a>
+
+                 <div id="search-advanced-options" class="row background-red hidden" >
+                      <div class="col-sm-4">
+                       <h6>Caratteristiche</h6>
+                       <label for="lung">lunghezza max.</label><input type="text" name="lung" id="lung" tabindex="6" placeholder="Km" pattern="[0-9]+{0,3}" maxlength="3"/><br/>
+                       <label for="pend">pendenza max.</label><input type="text" name="pend" id="pend" tabindex="7" placeholder="%" pattern="[0-9]+{0,3}" maxlength="3"  /><br/>
+
+                     </div>
+                    <div class="col-sm-4">
+                       <label for="type">tipo di strada</label><select name="type" id="type" tabindex="8">
+                                                                 <option value="0">tutte</option>
+                                                                 <option value="1">asfalto</option>
+                                                                 <option value="2">terra</option>
+                                                                 <option value="3">ghiaia</option>
+                                                                 <option value="4">misto</option>
+                                                               </select><br/>
+                       <label for="diff">difficoltà</label><select id="diff" name="diff" tabindex="9">
+                                                                 <option value="0">tutte</option>
+                                                                 <option value="1">*</option>
+                                                                 <option value="2">**</option>
+                                                                 <option value="3">***</option>
+                                                               </select><br/>
+                     </div>
+                    <div class="col-sm-4">
+
+                       <label><input type="checkbox" name="bambini" value="1" tabindex="10"  />adatto ai bambini</label><br/>
+
+                     </div>
+                   </div>
+                 </div>
+                 </form>
+            </div>
+
+          </div>
+        </header>
+      </section>
+
+      <main class="container" id="informativo">
+        <div class="row">
+          <header class="col-sm-12">
+              <h2>Private policy</h2>
+            </header>
+        </div>
+        <!--tab index 17-->
+        <article class="row">
+          <div class="col-md-12">
+          <p>  Basic services of the Bikeaway srl can be used without providing any personal data. Personal information is only provided on a voluntary basis (e.g. email address).</p>
+          <p>By registering an account, the user grants Bikeaway permission to process personally identifiable data as needed to provide its application services. Furthermore, the user agrees
+            that such data may be shared with select third parties for the sole purpose of enhancing these services.</p>
+          <p>Please note that every transfer of data via the internet might provide security issues. A full protection of data can therefore not be guaranteed.</p>
+          <p>The transmission of not actively requested advertisement and information material to any contact data published on Bikeaway by any third parties is prohibited. Bikeaway
+            has the right to take legal action in case of unrequested transmission of advertisements, such as SPAM-Mails.</p>
+
+            <h3>Cookies</h3>
+            <p>Cookies are small text files, which are saved on the user’s device when visiting a website. These text files support Bikeaway in analyzing user surfing behavior in order to improve
+               Bikeaway’s services. The storage of cookies can be deactivated in the settings of the user’s browser, which can restrict the usage of Bikeaway’s services.</p>
+
+            <h3>Information, deletion and blockage</h3>
+            <p>The user has the right to receive free information about the stored personal data, its origin and recipient and the purpose of data processing as well as a right of correction,
+              blockage and deletion of the respective data. In case of questions concerning data privacy every user can get in contact with Bikeaway.</p>
+
+            <h3>Change of data privacy policy</h3>
+            <p>This data privacy policy will be updated occasionally. The user is responsible to inform himself or herself about possible changes.</p>
+          </div>
+        </article>
+
+
+
+        </main>
+
+
+        <% include parziale/footer %>
+
+
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+      <script src="/js/jquery.cookie.js"></script>
+      <script src="/js/bikeaway.js"></script>
+      <script>
+    	$('document').ready(init);
+
+    	function init() {
+    		initCookie();
+        initLarghezzaSearch();
+    	}
+
+      </script>
+
+  </body>
+</html>

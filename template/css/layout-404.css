@@ -1,0 +1,35 @@
+@media screen and (max-width:767px) {
+
+  #search #search-title h1 {
+    font-size: 4rem ;
+  }
+  #search #search-title h2 {
+    font-size: 2rem ;
+  }
+}
+#search-background {
+  background-image: url('../images/sfondo-search-404.jpg');
+  min-height: 550px;
+  background-position: center center;
+}
+#search #search-title {
+  margin-top: 80px;
+  margin-bottom: 50px;
+}
+#search #search-title h1 {
+  font-size: 40px ;
+  line-height: 50px;
+  color: #9d0029;
+  margin: 0px 0px 20px 0px;
+  text-shadow: 0px 0px 0px rgba(0,0,0,0.7);
+}
+#search #search-title h2 {
+  font-size: 25px ;
+  color: #000;
+  margin: 0px;
+  text-shadow: 3px 3px 5px rgba(0,0,0,0.7);
+  font-weight: normal;
+}
+#percorsi article.row {
+  min-height: 190px;
+}

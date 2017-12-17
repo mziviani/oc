@@ -1,0 +1,173 @@
+
+<% include parziale/head %>
+
+
+
+      <div class="container-fluid">
+        <section class="row">
+          <div class="col-sm-12" style="padding: 0px; width:100%; height:500px;" id="map">
+
+          </div>
+        </section>
+      </div>
+
+      <div class="background-red">
+        <aside class="container" id="other-pins">
+          <div class="row">
+            <div class="col-sm-12 col-xs-12">
+              <!--<a href="#" class="visible-xs-block" tabindex="1"><span class="glyphicon glyphicon-list" aria-hidden="true"></span>opzioni mappa</a>-->
+              <!--<label><input type="checkbox" name="fontanelle" value="1" />Fontanelle</label>-->
+              <label id="parking"><input type="checkbox" name="parcheggi" value="2" tabindex="2" />Parcheggi auto <span></span></label>
+              <label id="bar"><input type="checkbox" name="bar" value="3" tabindex="3" />Bar <span></span></label>
+            <!--  <label><input type="checkbox" name="ristoranti" value="4" />Ristoranti</label>-->
+              <label id="alert"><input type="checkbox" name="alert" value="5" tabindex="4" />Alert Utenti <span></span></label>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <article class="container" id="scheda">
+        <div class="row">
+          <nav class="col-sm-12">
+            <ul>
+              <li><a href="/">home</a> <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span></li>
+              <% if (search==true) {%>
+              <li><a href="javascript:history.go(-1)">cerca</a> <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span></li>
+              <% } else { %>
+                <li><a href="/<%= percorsoObj[0]['scheda']['_idcategory'] %>"><%= percorsoObj[0]['categoria'][0]['title'] %></a> <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span></li>
+              <% } %>
+              <li><%= percorsoObj[0]['scheda']['title'] %></li>
+            </ul>
+          </nav>
+          <header class="col-sm-12">
+            <h1><%= percorsoObj[0]['scheda']['title'] %></h1>
+          </header>
+        </div>
+
+        <div class="row" id="content" data-lat="<%= percorsoObj[0]['coordinates'][0][0]%>" data-lng="<%= percorsoObj[0]['coordinates'][0][1]%>">
+            <div class="col-sm-9">
+              <p><%- percorsoObj[0]['scheda']['txt'] %></p>
+              <p class="tags"><span class="glyphicon glyphicon-tags" aria-hidden="true"></span><%= percorsoObj[0]['categoria'][0]['title'] %></p>
+
+              <div class="row" id="dettagli">
+                <div class="col-sm-3">
+                    Difficoltà <% for (var i=1;i<4;i++) {%><span <% if (i<=percorsoObj[0]['scheda']['difficolta']) {%>class="full"<%}; %>></span><%};%>
+                </div>
+                <div class="col-sm-3">
+                    Pendenza <strong><%= percorsoObj[0]['scheda']['pendenza'] %>%</strong>
+                </div>
+                <div class="col-sm-3">
+                    Tipo di strada <strong><%= percorsoObj[0]['scheda']['strada'] %></strong>
+                </div>
+                <div class="col-sm-3">
+                    Adatto ai bambini <% if (percorsoObj[0]['scheda']['bambini'] == true) { %><span class="glyphicon glyphicon-ok" aria-hidden="true"></span><% }else { %> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>   <%}%>
+                </div>
+                <div class="col-sm-3 lunghezza">
+                    <div>Lunghezza <strong><%= percorsoObj[0]['scheda']['lunghezza'] %> Km</strong></div>
+                </div>
+                <div class="col-sm-3" id="tempo">
+                    Tempo <strong>1:12:00</strong>
+                </div>
+              </div>
+
+              <% if (percorsoObj[0]['scheda']['note'] != undefined) { %>
+              <p class="note"><strong>note</strong><br/> <%- percorsoObj[0]['scheda']['note'] %></p>
+              <% } %>
+            </div>
+
+            <aside class="col-sm-3" id="annunci">
+
+            </aside>
+        </div>
+        <article class="row" id="commenti">
+          <header class="col-sm-9  ">
+            <!--<h2>Commenti</h2>-->
+          </header>
+          <div class="clearfix"></div>
+
+          <div class="col-sm-9" style="margin-bottom:16px;">
+            <div class="row background-red" style="margin:0px">
+              <section class="col-sm-9" id="menu1">
+
+                  <label for="commentType">Filtra Commenti</label> <select name="commentType" id="commentType" tabindex="5">
+                                                            <option value="-1">Tutti</option>
+                                                            <option value="0">Generali</option>
+                                                            <% var i = 1; percorsoObj[0]['scheda']['tappe'].forEach(function tappe(objTappe) {
+                                                                if (objTappe[0]== true) { %>
+                                                                    <option value="<%= i%>">Tappa <%= i%></option>
+                                                            <% i++ }
+                                                              }) %>
+                                                          </select>
+
+              </section>
+              <section class="col-sm-3" id="menu2">
+
+                  <a href="#" tabindex="6">Inserisci commento</a>
+
+              </section>
+            </div>
+          </div>
+
+          <div class="clearfix"></div>
+          <section class="col-sm-9" style="margin-bottom:24px;" id="areaInserimento">
+            <form method="post" action="/insert-comment" class="row">
+
+                <div class="col-sm-12"><label for="typec">Tipo di commento </label><br/>
+                  <select name="typec" id="typec" tabindex="7">
+                                                            <option value="0">Generale</option>
+                                                            <% var i = 1; percorsoObj[0]['scheda']['tappe'].forEach(function tappe(objTappe) {
+                                                                if (objTappe[0]== true) { %>
+                                                                    <option value="<%= i%>">Tappa <%= i%></option>
+                                                            <% i++ }
+                                                              }) %>
+                                                            </select>
+                </div>
+                <div class="col-sm-6">
+                  <label for="nome">Nome </label><br/>
+                  <input type="text" name="nome" id="nome" required  tabindex="8" />
+                </div>
+                <div class="col-sm-6">
+                  <label for="email">Email </label><br/>
+                  <input type="email" name="email" id="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,8}$" required tabindex="9"  />
+                </div>
+
+                <div class="clearfix"></div>
+                <div class="col-sm-12">
+                  <label for="commento">Commento</label><br/>
+                  <textarea id="commento" name="commento" required tabindex="10"></textarea>
+                </div>
+                <div class="col-sm-9"><em>I campi sono tutti obbligatori</em></div>
+                <div class="col-sm-3"><input type="submit" value="inserisci" tabindex="11"></div>
+
+              <!--  <div class="col-md-12"><p class="msg wait">messaggio</p></div>-->
+
+            </form>
+          </section>
+
+          <div class="clearfix"></div>
+          <div id="listacommenti" style="display:table; width:100%">
+          </div>
+          <div id="paginazione" class="col-sm-9">
+          </div>
+        </article>
+      </article>
+      <% include parziale/footer %>
+
+
+  <!-- inserire google analytics -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDHISEgt5-1Z6cK7pyntyeQ9ffd3TJa11k&callback=initMapScheda"></script>
+  <script src="/js/pagination.min.js"></script>
+  <script src="/js/jquery.cookie.js"></script>
+  <script src="/js/bikeaway.js"></script>
+  <script>
+  $('document').ready(init);
+
+  function init() {
+    initCookie();
+    initScheda();
+
+  }
+  </script>
+  </body>
+</html>
