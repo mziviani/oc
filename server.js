@@ -49,7 +49,7 @@ app.set("view engine", "ejs");
 
 //connesione al db
 //var url = 'mongodb://'+mongoUrl+':27017/bikeaway';
-var ulr = mongoURL;
+var url = mongoURL;
 
 var baDB;
 mongoClient.connect(url, function(err, db) {
