@@ -1591,3 +1591,4 @@ app.get("*", function(req,res) {
 app.listen(port,ip);
 module.exports = app;
 console.log('Server running on http://%s:%s', ip, port);
+console.log('mongodb -> ' + mongoURL)
