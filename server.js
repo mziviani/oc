@@ -1016,10 +1016,15 @@ app.get("/", function(req,res) {
                                                            })
          })
           */
-          res.end("ciao")
+          res.render(__dirname + "/template/505", {
+              title: "404 la pagina non è più disponibile",
+              description: "meta descrizione categoria",
+          } )
 });
 
-
+app.get("/ciao", function(req,res) {
+    res.send("ciao sono gianni")
+})
 
 
 
