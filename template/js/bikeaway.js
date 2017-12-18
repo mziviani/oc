@@ -43,7 +43,8 @@ function resizeLarghezzaSearch() {
 }
 
 //set visibilità ed etichetta filtri avanzati
-function visualizzaFiltriAvanzati() {
+function visualizzaFiltriAvanzati(e) {
+	e.preventDefault()
 	//ricalcolo la larghezza sumobile
 	resizeLarghezzaSearch()
 
@@ -1081,20 +1082,19 @@ function attivaFiltro() {
 								}
 
 									chiusuraCommenti(classe,txt, function() {
+
 										//aggiornare la paginazione + inserire il commento
 										if (data.code==3) {
 											allComments.unshift({"data": new Date(Date.now()), "autore": autore, "commento": commento, "tappa":tappa})
 										}
 
+
 										//imposto la visualizzazione su tutti
-										$('#commentType').val(-1).change();
+										$('#commentType').val(-1)
+										filtraCommentiChange(e)
 
 
 									})
-
-
-
-
 
 						})
 						.fail(function(data) {
@@ -1147,8 +1147,8 @@ function apriCommentidaTappa(e,n) {
 
 var directionsDisplay;
 var directionsService;
-var allComments;
-var paginazioneObj;
+var allComments = [];
+var paginazioneObj = null;
 
 function initMapScheda() {
 	var url = window.location.pathname ;
@@ -1413,7 +1413,7 @@ function visualizzaGPSscheda(position) {
 }
 
 function filtraCommentiChange(e) {
-	var dd = $(e.target);
+	var dd = $("#commentType");
 	var scelta = parseInt(dd.val());
 
 	var containerPag = $('#paginazione');
@@ -1424,9 +1424,10 @@ function filtraCommentiChange(e) {
 																//nascondo tutti i commenti e poi li distruggo
 																articoli.remove()
 
-																//distruggo la vecchia paginazione
-																paginazioneObj.pagination('destroy')
-
+																if (paginazioneObj != null) {
+																	//distruggo la vecchia paginazione
+																	paginazioneObj.pagination('destroy')
+																}
 
 																//pulisco la sorgetnte dati di paginazione
 																var result = [];
@@ -1450,7 +1451,13 @@ function filtraCommentiChange(e) {
 																		//salvo nel globale la nuova paginazioneObj
 																		paginazioneObj = containerPag
 																} else {
-																		dataContainer.append('<article class="col-sm-9 corpo-commento"><p>Nessun commento per la <strong>tappa '+scelta+	'</strong></p></article>')
+																		var txt = "per la <strong>tappa " + scelta+"</strong>";
+
+																		if (scelta == 0) {
+																			 txt = "<strong>Generale</strong>"
+																		}
+
+																		dataContainer.append('<article class="col-sm-9 corpo-commento"><p>Nessun commento '+txt+'</p></article>')
 
 																}
 
