@@ -40,6 +40,30 @@ var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
       }
   }
 
+  var baDB = null,
+      dbDetails = new Object();
+
+  var initDb = function(callback) {
+    if (mongoURL == null) return;
+
+    var mongodb = require('mongodb');
+    if (mongodb == null) return;
+
+    mongodb.connect(mongoURL, function(err, conn) {
+      if (err) {
+        callback(err);
+        return;
+      }
+
+      baDB = conn;
+      dbDetails.databaseName = db.databaseName;
+      dbDetails.url = mongoURLLabel;
+      dbDetails.type = 'MongoDB';
+
+      console.log('Connected to MongoDB at: %s', mongoURL);
+    });
+  };
+
 var app = express();
 
 
@@ -49,6 +73,7 @@ app.set("view engine", "ejs");
 
 //connesione al db
 //var url = 'mongodb://'+mongoUrl+':27017/bikeaway';
+/*
 var url = mongoURL;
 
 var baDB;
@@ -59,7 +84,7 @@ mongoClient.connect(url, function(err, db) {
     };
   baDB=db
 });
-
+*/
 //verifica akismet
 var clientAki = akismet.client({
   key  : '98d8beff97bd',
