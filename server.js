@@ -25,6 +25,7 @@ app.set("view engine", "ejs");
 
 
 //connesione al db
+/*
 var url = 'mongodb://localhost:27017/Bikeaway';
 var baDB;
 mongoClient.connect(url, function(err, db) {
@@ -34,36 +35,42 @@ mongoClient.connect(url, function(err, db) {
     };
   baDB=db
 });
-
+*/
 //verifica akismet
+/*
 var clientAki = akismet.client({
   key  : '98d8beff97bd',
   blog : 'http://localhost'
 });
-
+*/
 //scrivo sul log il risultato per verificare la key di akistmet
+/*
 clientAki.verifyKey()
 .then(function(valid) {
   if (valid) console.log('Akismet Valid key!');
   else console.log('Akismet Invalid key!');
 })
-
+*/
 //percorso statico per caricare i file dei template
+/*
 app.use(express.static(__dirname + "/template"));
-
+*/
 //override per rendere compatibile CRUD con i browser più vecchi per chiamate ajax
 //pag 131
+/*
 app.use("/private/api/json/:slag_percorso", methodOverride());
 app.use("/private/api/json/all", methodOverride());
 app.use("/private/api/json/commento/upload", methodOverride());
-
+*/
 //upload commenti
+/*
 app.use(bodyParser.urlencoded({ extended: false }))
-
+*/
 
 //set cookieParser
+/*
 app.use(cookieParser());
-
+*/
 //non trova la path -> output template html
 /*
 app.get("/404", function(req,res) {
