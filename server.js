@@ -38,7 +38,7 @@ var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
         mongoURL += mongoHost + ':' +  mongoPort + '/' + mongoDatabase;
 
       }
-
+  }
 
 var app = express();
 
@@ -1589,4 +1589,4 @@ new CronJob('00 00 02 * * *', function() {
 
 
 app.listen(port,ip);
-module.exports = app
+module.exports = app;
