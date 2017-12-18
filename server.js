@@ -74,7 +74,7 @@ app.get("/404", function(req,res) {
 
 
                               res.status(404)
-                              res.render(__dirname + "/../template/404", {
+                              res.render(__dirname + "/template/404", {
                                   title: "404 la pagina non è più disponibile",
                                   description: "meta descrizione categoria",
                                   categoryObj: result
@@ -91,21 +91,21 @@ app.get("/404", function(req,res) {
 
 app.get("/500", function(req,res) {
     res.status(500);
-    res.render(__dirname + "/../template/505", {
+    res.render(__dirname + "/template/505", {
         title: "Errore server interno",
         description: "meta descrizione categoria",
     } )
 })
 
 app.get("/private-policy", function(req,res) {
-  res.render(__dirname + "/../template/private-policy", {
+  res.render(__dirname + "/template/private-policy", {
       title: "Private Policy",
       description: "meta descrizione categoria",
   } )
 })
 
 app.get("/help-center", function(req,res) {
-  res.render(__dirname + "/../template/help-center", {
+  res.render(__dirname + "/template/help-center", {
       title: "Help Center",
       description: "meta descrizione categoria",
   } )
@@ -243,7 +243,7 @@ app.get("/cerca", function(req,res) {
           }
 
 
-          res.render(__dirname + "/../template/ricerca", {
+          res.render(__dirname + "/template/ricerca", {
               title:  "Ricerca | "+parolaRicercata,
               description: "meta descrizione categoria",
               query: parolaRicercata,
@@ -427,7 +427,7 @@ app.get("/:slag_category",function(req,res) {
           return;
         }
 
-        res.render(__dirname + "/../template/category", {
+        res.render(__dirname + "/template/category", {
             title: req.params.slag_category + " | " ,
             description: "meta descrizione categoria",
             percorsiObj: result[0],
@@ -487,7 +487,7 @@ app.get("/:slag_category/:slag_percorso",function(req,res) {
                                                  {$inc: { 'scheda.view': 1}}
                                                 )
 
-                              res.render(__dirname + "/../template/percorso", {
+                              res.render(__dirname + "/template/percorso", {
                                   title: resPercorso[0]['scheda'].title + " | ",
                                   description: "meta descrizione categoria",
                                   percorsoObj: resPercorso,
@@ -949,7 +949,7 @@ app.get("/", function(req,res) {
                 return;
               }
 
-               res.render(__dirname + "/../template/index", {
+               res.render(__dirname + "/template/index", {
                                                             title: null,
                                                             description: "meta descrizione",
                                                              highlightObj: hightlight,
