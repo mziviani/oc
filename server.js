@@ -507,7 +507,7 @@ app.get("/", function(req,res) {
                 return;
               }
 
-               res.render(__dirname + "/index", {
+               res.render(__dirname + "/template/index", {
                                                             title: null,
                                                             description: "meta descrizione",
                                                              highlightObj: hightlight,
