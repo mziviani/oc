@@ -12,6 +12,10 @@ var bodyParser = require('body-parser');
 var akismet = require('akismet-api');
 var CronJob = require('cron').CronJob;
 var ObjectId = require('mongodb').ObjectID;
+var  morgan  = require('morgan');
+
+var app = express();
+
 
 
 
@@ -64,27 +68,18 @@ var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
     });
   };
 
-var app = express();
+
+
+
+
+
+app.use(morgan('combined'))
 
 
 //imposto lengine di ejs per template
 app.set("view engine", "ejs");
 
 
-//connesione al db
-//var url = 'mongodb://'+mongoUrl+':27017/bikeaway';
-/*
-var url = mongoURL;
-
-var baDB;
-mongoClient.connect(url, function(err, db) {
-  if (err) {
-      console.log("Non riesco a connetermi al database: "+err);
-      return;
-    };
-  baDB=db
-});
-*/
 //verifica akismet
 var clientAki = akismet.client({
   key  : '98d8beff97bd',
@@ -99,7 +94,7 @@ clientAki.verifyKey()
 })
 
 //percorso statico per caricare i file dei template
-app.use(express.static(__dirname + "/../template"));
+app.use(express.static(__dirname + "/template"));
 
 //override per rendere compatibile CRUD con i browser più vecchi per chiamate ajax
 //pag 131
@@ -114,37 +109,9 @@ app.use(bodyParser.urlencoded({ extended: false }))
 //set cookieParser
 app.use(cookieParser());
 
-//MIDDLEWARE **********************************************************************************
-//example middelware
-/*app.use(function (req, res, next) {
-  console.log('Time:', Date.now());
-  next();
-});
-//middleware su url
-app.use('/user/:id', function (req, res, next) {
-  console.log('Request Type:', req.method);
-  next();
-});*/
-
-//middleware per memorizzare la ricerca !!!
-// middleware app o router ???
-
-
-//middleware con doppia funzione utile per 404
-/*app.get('/user/:id', function (req, res, next) {
-  // if the user ID is 0, skip to the next route
-  if (req.params.id == 0) next('route');
-  // otherwise pass the control to the next middleware function in this stack
-  else next(); //
-}, function (req, res, next) {
-  // render a regular page
-  res.render('regular');
-});*/
-//MIDDLEWARE **********************************************************************************
-
 
 //non trova la path -> output template html
-app.get("/404", function(req,res) {
+/*app.get("/404", function(req,res) {
 
   baDB.collection("category").find({"publish":true},{"publish":0, "order":0})
                               .sort({"order":1})
@@ -169,10 +136,10 @@ app.get("/404", function(req,res) {
 
 
 
-})
+})*/
 
 
-
+/*
 app.get("/500", function(req,res) {
     res.status(500);
     res.render(__dirname + "/../template/505", {
@@ -194,8 +161,9 @@ app.get("/help-center", function(req,res) {
       description: "meta descrizione categoria",
   } )
 })
-
+*/
 //cerca
+/*
 app.get("/cerca", function(req,res) {
 
 
@@ -339,8 +307,9 @@ app.get("/cerca", function(req,res) {
   )
 
 })
-
+*/
 //annunci
+/*
 app.get("/annunci/:slag_id", function(req,res) {
   var idAnnuncio = null
 
@@ -372,9 +341,10 @@ app.get("/annunci/:slag_id", function(req,res) {
                                                )
 });
 
-
+*/
 
 //categoria -> output template html
+/*
 app.get("/:slag_category",function(req,res) {
 
     var idCategoria = req.params.slag_category;
@@ -520,8 +490,10 @@ app.get("/:slag_category",function(req,res) {
       }
     )
 })
+*/
 
 //percorso -> output template html
+/*
 app.get("/:slag_category/:slag_percorso",function(req,res) {
   var idPercorso = req.params.slag_percorso;
   var idCategory = req.params.slag_category;
@@ -585,7 +557,7 @@ app.get("/:slag_category/:slag_percorso",function(req,res) {
 
 })
 
-
+*/
 
 //INDEX
 app.get("/", function(req,res) {
@@ -1052,6 +1024,7 @@ app.get("/", function(req,res) {
 
 
 //xhr per home
+/*
 app.get("/private/api/json/all/", function(req,res) {
   baDB.collection('percorsi').aggregate([
                                                       {
@@ -1102,9 +1075,10 @@ app.get("/private/api/json/all/", function(req,res) {
 
 
 })
-
+*/
 
 //json ricerca
+/*
 app.get("/private/api/json/cerca", function(req,res) {
   var parolaRicercata = req.query.q;
   var searchKeyword = ba.keyWordGenerator(parolaRicercata);
@@ -1232,9 +1206,10 @@ app.get("/private/api/json/cerca", function(req,res) {
 
   )
 })
-
+*/
 //json annunci scheda
 //annunci per percorso
+/*
 app.post("/private/api/json/annunci", function(req,res) {
   var x1 = Number((req.body.lat1).trim());
   var y1 = Number((req.body.lng1).trim());
@@ -1284,8 +1259,9 @@ app.post("/private/api/json/annunci", function(req,res) {
   });
 
 })
-
+*/
 //json per caricare tutti i percorsi di una categoria
+/*
 app.get("/private/api/json/category/:slag_category", function(req,res) {
   var idCategory = req.params.slag_category
   baDB.collection('percorsi').aggregate([
@@ -1345,8 +1321,10 @@ app.get("/private/api/json/category/:slag_category", function(req,res) {
                                             });
 
 })
+*/
 
 //upload segnalazioni
+/*
 app.post("/private/api/json/segnalazioni/upload", function(req,res) {
   var tipoSegnalazione = Number((req.body.tipoSegnalazione).trim());
   var lat = Number((req.body.lat).trim());
@@ -1375,8 +1353,9 @@ app.post("/private/api/json/segnalazioni/upload", function(req,res) {
 
 
 })
-
+*/
 //download segnalazioni
+/*
 app.get("/private/api/json/segnalazioni/:slag_percorso", function(req,res) {
   var idPercorso = req.params.slag_percorso;
 
@@ -1404,8 +1383,9 @@ app.get("/private/api/json/segnalazioni/:slag_percorso", function(req,res) {
                           })
 
 })
-
+*/
 //download attivita bar e parcheggi
+/*
 app.get("/private/api/json/attivita/:slag_percorso", function(req,res) {
   var idPercorso = req.params.slag_percorso;
 
@@ -1433,9 +1413,9 @@ app.get("/private/api/json/attivita/:slag_percorso", function(req,res) {
                           })
 
 })
+*/
 
-
-
+/*
 app.post("/private/api/json/commento/upload/", function(req,res) {
   var autore = (req.body.autore).trim();
   var idPercorso = (req.body._idPercorso).trim();
@@ -1526,10 +1506,11 @@ app.post("/private/api/json/commento/upload/", function(req,res) {
 
 
 })
-
+*/
 //
 
 //json per caricare i commenti di un percorso
+/*
 app.get("/private/api/json/commenti/:slag_percorso/", function(req,res) {
   var idPercorso = req.params.slag_percorso;
 
@@ -1556,10 +1537,11 @@ app.get("/private/api/json/commenti/:slag_percorso/", function(req,res) {
 
                                                     })
 })
-
+*/
 
 
 //json per caricare tutti i percorsi di una categoria
+/*
 app.get("/private/api/json/:slag_category/:slag_percorso/", function(req,res) {
   var idPercorso = req.params.slag_percorso;
   var idCategory = req.params.slag_category;
@@ -1584,17 +1566,18 @@ app.get("/private/api/json/:slag_category/:slag_percorso/", function(req,res) {
 })
 
 
-
+*/
 
 
 //in caso di URI non definiti -> redirect con errore 404
+
 app.get("*", function(req,res) {
   res.redirect("/404")
 })
 
 //cronjop per eliminare gli alert ogni 60 gg
 //alle 2 di ogni notte pulizia degli alert più vecchi di 60 gg
-new CronJob('00 00 02 * * *', function() {
+/*new CronJob('00 00 02 * * *', function() {
   var dataAttuale = new Date(Date.now())
   var data60gg = new Date(dataAttuale-(24*60*60*1000*60))
 
@@ -1602,16 +1585,7 @@ new CronJob('00 00 02 * * *', function() {
 
   console.log("Pulizia degli alert minori del " + data60gg);
 }, null, true);
-
-
-//to do
-// -> parte amministrativa ? (no)
-//realizzare pagine statiche (contatti, help center ecc...)
-// realizzare redirect /505
-// api mailchimp
-// sistemare filtering con javascript
-//sistemre il filtro della scheda sul cellulare
-
+*/
 
 app.listen(port,ip);
 module.exports = app;
