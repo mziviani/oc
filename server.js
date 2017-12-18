@@ -98,11 +98,11 @@ app.use(express.static(__dirname + "/template"));
 
 //override per rendere compatibile CRUD con i browser più vecchi per chiamate ajax
 //pag 131
-/*
+
 app.use("/private/api/json/:slag_percorso", methodOverride());
 app.use("/private/api/json/all", methodOverride());
 app.use("/private/api/json/commento/upload", methodOverride());
-*7
+
 //upload commenti
 app.use(bodyParser.urlencoded({ extended: false }))
 
