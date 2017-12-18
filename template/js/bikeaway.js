@@ -1307,12 +1307,12 @@ function initMapScheda() {
 
 
 												 //da elimminare
-												 mapHome.addListener('click', function(event) {
+												 /*mapHome.addListener('click', function(event) {
 
 																							 alert(event.latLng.lat()+" "+event.latLng.lng());
 
 																			 });
-
+																			 */
 												//se cambiano i confini vengono ricaricati gli annunci
 												mapHome.addListener('bounds_changed', function(event) {
 																						//nascondo gli Annunci
