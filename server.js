@@ -1557,6 +1557,9 @@ new CronJob('00 00 02 * * *', function() {
   console.log("Pulizia degli alert minori del " + data60gg);
 }, null, true);
 */
+var port = process.env.PORT || 8080;
 
 
-app.listen(8080);
+app.listen(port, function() {
+	console.log('Our app is running on http://localhost:' + port);
+});
