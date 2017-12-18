@@ -564,7 +564,7 @@ app.get("/:slag_category/:slag_percorso",function(req,res) {
 app.get("/", function(req,res) {
 
   var idCookie = req.cookies.sessionid;
-
+  /*
   async.waterfall([
         function(callback) {
           baDB.collection('category').aggregate([
@@ -1015,8 +1015,8 @@ app.get("/", function(req,res) {
                                                              annunciObj: annunci
                                                            })
          })
-
-
+          */
+          res.end("ciao")
 });
 
 
@@ -1571,11 +1571,11 @@ app.get("/private/api/json/:slag_category/:slag_percorso/", function(req,res) {
 
 
 //in caso di URI non definiti -> redirect con errore 404
-
+/*
 app.get("*", function(req,res) {
   res.redirect("/404")
 })
-
+*/
 //cronjop per eliminare gli alert ogni 60 gg
 //alle 2 di ogni notte pulizia degli alert più vecchi di 60 gg
 /*new CronJob('00 00 02 * * *', function() {
