@@ -1015,6 +1015,7 @@ app.get("/", function(req,res) {
                                                            })
          })
           */
+          console.log("index avviata");
           res.render(__dirname + "/template/505", {
               title: "404 la pagina non è più disponibile",
               description: "meta descrizione categoria",
@@ -1022,6 +1023,7 @@ app.get("/", function(req,res) {
 });
 
 app.get("/ciao", function(req,res) {
+  console.log("ciao avviato");
     res.send("ciao sono gianni")
 })
 
