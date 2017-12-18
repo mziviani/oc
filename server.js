@@ -73,7 +73,6 @@ var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
 
 
 
-app.use(morgan('combined'))
 
 
 //imposto lengine di ejs per template
@@ -1594,6 +1593,5 @@ app.get("*", function(req,res) {
 */
 
 app.listen(port,ip);
-module.exports = app;
 console.log('Server running on http://%s:%s', ip, port);
 console.log('mongodb -> ' + mongoURL)
