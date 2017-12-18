@@ -59,9 +59,451 @@ app.use(bodyParser.urlencoded({ extended: false }))
 //set cookieParser
 app.use(cookieParser());
 
+//non trova la path -> output template html
+app.get("/404", function(req,res) {
+
+  baDB.collection("category").find({"publish":true},{"publish":0, "order":0})
+                              .sort({"order":1})
+                            .toArray(function(err, result) {
+
+                              if(err) {
+                                  res.redirect("/505");
+                                  return;
+                              }
 
 
 
+                              res.status(404)
+                              res.render(__dirname + "/../template/404", {
+                                  title: "404 la pagina non è più disponibile",
+                                  description: "meta descrizione categoria",
+                                  categoryObj: result
+                              } )
+
+                          })
+
+
+
+
+})
+
+
+
+app.get("/500", function(req,res) {
+    res.status(500);
+    res.render(__dirname + "/../template/505", {
+        title: "Errore server interno",
+        description: "meta descrizione categoria",
+    } )
+})
+
+app.get("/private-policy", function(req,res) {
+  res.render(__dirname + "/../template/private-policy", {
+      title: "Private Policy",
+      description: "meta descrizione categoria",
+  } )
+})
+
+app.get("/help-center", function(req,res) {
+  res.render(__dirname + "/../template/help-center", {
+      title: "Help Center",
+      description: "meta descrizione categoria",
+  } )
+})
+
+//cerca
+app.get("/cerca", function(req,res) {
+
+
+  //1 pulire la ricerca
+  var parolaRicercata = req.query.q;
+  //modulo personalizzato per ricavare le keyword da una stringa di ricerca
+  var searchKeyword = ba.keyWordGenerator(parolaRicercata);
+
+  //controllo se esiste un cookie per identificare l'utente
+  // se non esiste genero un hash per identificare l'utente
+  var idCookie = req.cookies.sessionid;
+
+  if (idCookie == undefined) {
+    crypto.randomBytes(48, function(err, buffer) {
+      var idCookie = buffer.toString('hex');
+      res.cookie("sessionid", idCookie, { expires: new Date(253402300000000)});
+    });
+  }
+
+  //doppia ricerca
+  //prima ricerca rigida in caso 0 result
+  //seconda ricerca lasca
+  async.waterfall([
+        function(callback) {
+          baDB.collection('percorsi').aggregate([
+                                                    {
+                                                            $match: {
+                                                                      'scheda.publish':true,
+                                                                      'scheda.tags': { $all: searchKeyword }
+                                                                    }
+                                                     },
+                                                     {
+                                                         $lookup: {
+                                                                    from:"category",
+                                                                    localField: "scheda._idcategory",
+                                                                    foreignField: "_id",
+                                                                    as: "categoria"
+
+                                                             }
+
+                                                      },
+                                                      {
+                                                        $sort: {
+                                                              "scheda.title": 1
+                                                        }
+
+                                                      }
+
+                                                  ]).toArray(function(err,result) {
+                                                    if(err) {
+                                                      callback(err)
+                                                      return;
+                                                    }
+
+                                                    callback(null, result)
+
+
+                                                  })
+
+        },
+        function(result,callback) {
+          if(result.length==0) {
+            baDB.collection('percorsi').aggregate([
+                                                          {
+                                                                  $match: {
+
+                                                                             $text: { $search: parolaRicercata,
+                                                                                      $caseSensitive: false},
+                                                                             'scheda.publish':true,
+                                                                          }
+                                                           },
+                                                           {
+                                                               $lookup: {
+                                                                          from:"category",
+                                                                          localField: "scheda._idcategory",
+                                                                          foreignField: "_id",
+                                                                          as: "categoria"
+
+                                                                   }
+
+                                                            },
+                                                            {
+                                                              $sort: {
+                                                                    "scheda.title": 1
+                                                              }
+
+                                                            }
+
+
+                                                  ]).toArray(
+                                                    function(err,result) {
+                                                    if(err) {
+                                                      callback(err)
+                                                      return;
+                                                    }
+
+                                                    callback(null, result)
+
+                                                  })
+
+
+
+          } else {
+            callback(null,result)
+          }
+
+        }, function(result, callback) {
+
+          //inserisco nel db la ricerca + hash utente
+          baDB.collection("historySearch").insert(
+                            {_idUtente: idCookie,
+                              data: new Date(Date.now()),
+                              ricerca: parolaRicercata,
+                              keyword: searchKeyword
+                            })
+
+          callback(null,result)
+
+        }],
+        function(err, result) {
+          if(err) {
+            console.log("errore nella ricerca: " + err);
+            res.redirect("/505");
+            return;
+          }
+
+          if(result.length==0) {
+            result = undefined;
+          }
+
+
+          res.render(__dirname + "/../template/ricerca", {
+              title:  "Ricerca | "+parolaRicercata,
+              description: "meta descrizione categoria",
+              query: parolaRicercata,
+              serp: result
+          } )
+        }
+
+
+  )
+
+})
+
+//annunci
+app.get("/annunci/:slag_id", function(req,res) {
+  var idAnnuncio = null
+
+  try {
+    idAnnuncio = ObjectId(req.params.slag_id)
+  } catch(err) {
+    idAnnuncio = null
+  }
+
+  //cerco il documento e aggiorno i click
+   baDB.collection("annunci").findOneAndUpdate(
+                                                { _id: ObjectId(idAnnuncio)},
+                                                 {$inc: { 'click': 1}},
+                                                 function(err,result) {
+                                                   if(err){
+                                                     res.redirect("/505");
+                                                     console.log("Errore in annunci -> " + err);
+                                                     return
+                                                   }
+
+                                                   if (idAnnuncio == null) {
+                                                     res.redirect("/404");
+                                                     return
+                                                   }
+
+                                                   res.redirect(result['value']['link']);
+
+                                                 }
+                                               )
+});
+
+
+
+//categoria -> output template html
+app.get("/:slag_category",function(req,res) {
+
+    var idCategoria = req.params.slag_category;
+
+    async.series([
+        function(callback) {
+          baDB.collection('category').aggregate([
+                                                {
+                                                    $match: {
+                                                               _id:idCategoria
+                                                            }
+                                                },
+                                                { $lookup: {
+                                                            from: "percorsi",
+                                                            localField: "_id",
+                                                            foreignField: "scheda._idcategory",
+                                                            as: "percorsi"
+                                                            }
+                                                },
+                                                {
+                                                   $project: {
+                                                               "title":1,
+                                                               "percorsi": {
+                                                                            $filter: {
+                                                                                        input:"$percorsi",
+                                                                                        as: "percorsi",
+                                                                                        cond: {
+                                                                                                    $eq: ["$$percorsi.scheda.publish", true]
+                                                                                                }
+                                                                                      }
+
+
+                                                                           }
+                                                              }
+                                                },
+                                                 { $unwind:"$percorsi" },
+                                                          { $sort: {
+                                                                    "percorsi.scheda.title":1
+                                                                    }
+                                                          },
+                                                          { $group: {
+                                                                    _id:"$_id",
+                                                                    title: {$first:"$title"},
+                                                                    percorsi: {$push: "$percorsi"}
+                                                                    }
+                                                          }
+                                              ]).toArray(function(err,resPercorsi) {
+                                                                                    if(err) {
+                                                                                      callback(err);
+                                                                                      return
+                                                                                    }
+
+                                                                                    //controllo il numero di percorsi -> 0 redirect 404
+                                                                                    if (resPercorsi.length==0) {
+                                                                                      res.redirect("/404");
+                                                                                      return;
+                                                                                    }
+
+                                                                                    callback(null, resPercorsi);
+                                                                                  })
+        },
+        function(callback) {
+          baDB.collection("category").aggregate([
+                                                 {
+                                                   $match:  {
+                                                              publish: true
+                                                            }
+                                                  },
+                                                  { $lookup: {
+                                                                from: "percorsi",
+                                                                localField: "_id",
+                                                                foreignField: "scheda._idcategory",
+                                                                as: "percorsi"
+                                                              }
+                                                  },
+                                                  {  $project: {  "title": 1,
+                                                                  "image": 1,
+                                                                  "order":1,
+                                                                  "percorsi": {
+                                                                                $filter: {
+                                                                                           input: "$percorsi",
+                                                                                           as: "percorsi",
+                                                                                           cond: {
+                                                                                                  "$eq": ["$$percorsi.scheda.publish", true]
+                                                                                                 }
+                                                                                          }
+                                                                              }
+                                                                  }
+                                                   },
+                                                    { $unwind:"$percorsi" },
+                                                    { $sort: {
+                                                              "percorsi.scheda.publish_date": -1
+                                                              }
+                                                    },
+                                                    { $group: {
+                                                              _id:"$_id",
+                                                              title: {$first:"$title"},
+                                                              image: {$first:"$image"},
+                                                              order: {$first: "$order"},
+                                                              percorsi: {$push: "$percorsi"}
+                                                              }
+                                                    },{
+                                                       $sort: {
+                                                                "order": 1
+                                                              }
+                                                       },
+                                                    {
+                                                      $project: {
+                                                                  "_id":1,
+                                                                  "title":1,
+
+                                                                 }
+
+                                                     }
+                                                ]).toArray(function(err, resCategory) {
+                                                    if(err) {
+                                                        callback(err)
+                                                        return
+                                                    }
+
+                                                    if (resCategory.length==0) {
+                                                      resCategory = undefined;
+                                                    }
+
+                                                    callback(null, resCategory)
+
+                                                })
+        }
+      ], function(err,result) {
+        if(err) {
+          console.log("errore in index mongodb find: " + err);
+          //redirect errore server 500
+          res.redirect("/500");
+          return;
+        }
+
+        res.render(__dirname + "/../template/category", {
+            title: req.params.slag_category + " | " ,
+            description: "meta descrizione categoria",
+            percorsiObj: result[0],
+            categoryObj: result[1]
+        } )
+      }
+    )
+})
+
+//percorso -> output template html
+app.get("/:slag_category/:slag_percorso",function(req,res) {
+  var idPercorso = req.params.slag_percorso;
+  var idCategory = req.params.slag_category;
+  var cerca = false;
+
+  //controllo se deriva dal cerca o dalla categoria
+  if (req.query.type=="search") {
+    cerca = true;
+  }
+
+  baDB.collection("percorsi").aggregate([
+                                        {
+                                                $match: {
+                                                            $and: [
+                                                                    {_id: idPercorso},
+                                                                    {'scheda._idcategory':idCategory},
+                                                                    {'scheda.publish': true}
+                                                            ]
+                                                        }
+                                         },
+                                         {
+                                             $lookup: {
+                                                        from:"category",
+                                                        localField: "scheda._idcategory",
+                                                        foreignField: "_id",
+                                                        as: "categoria"
+
+                                                 }
+
+                                          },
+                                          { $limit : 1 }
+                            ]).toArray(function(err, resPercorso) {
+
+                              if(err) {
+                                  res.redirect("/505");
+                                  return;
+                              }
+
+                              if (resPercorso.length==0) {
+                                  res.redirect("/404");
+                                  return;
+                              }
+
+                              //Incremento di 1 le visite al percorso
+                              baDB.collection("percorsi").update(
+                                                {_id: resPercorso[0]['_id']},
+                                                 {$inc: { 'scheda.view': 1}}
+                                                )
+
+                              res.render(__dirname + "/../template/percorso", {
+                                  title: resPercorso[0]['scheda'].title + " | ",
+                                  description: "meta descrizione categoria",
+                                  percorsoObj: resPercorso,
+                                  search: cerca
+                              } )
+
+                          })
+
+
+
+
+})
+
+
+
+//INDEX
 app.get("/", function(req,res) {
 
   var idCookie = req.cookies.sessionid;
@@ -507,7 +949,7 @@ app.get("/", function(req,res) {
                 return;
               }
 
-               res.render(__dirname + "/template/index", {
+               res.render(__dirname + "/../template/index", {
                                                             title: null,
                                                             description: "meta descrizione",
                                                              highlightObj: hightlight,
@@ -519,6 +961,564 @@ app.get("/", function(req,res) {
 
 
 });
+
+
+
+
+
+
+//xhr per home
+app.get("/private/api/json/all/", function(req,res) {
+  baDB.collection('percorsi').aggregate([
+                                                      {
+                                                              $match: {
+                                                                        'scheda.publish':true,
+                                                                      }
+                                                       },
+                                                       {
+                                                           $lookup: {
+                                                                      from:"category",
+                                                                      localField: "scheda._idcategory",
+                                                                      foreignField: "_id",
+                                                                      as: "categoria"
+
+                                                               }
+
+                                                        },{
+                                                         $project: {  "_id":1,
+                                                                      "coordinates": {
+                                                                                         "$slice": [ "$coordinates", 0,1]
+                                                                                      },
+                                                                      "scheda.title":1,
+                                                                      "scheda.difficolta":1,
+                                                                      "scheda.lunghezza":1,
+                                                                      "scheda.pendenza":1,
+                                                                      "scheda.strada":1,
+                                                                      "categoria": {
+                                                                                      "title":1,
+                                                                                      "_id":1
+                                                                                    }
+
+                                                                    }
+                                                      }
+                                             ]).toArray(function(err,result) {
+                                               res.header("Access-Control-Allow-Origin", "http://localhost:8080/");
+                                               res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+                                               res.setHeader('Content-Type', 'application/json');
+
+                                                if (err) {
+                                                  console.log("Errore /private/api/json/all/ ->" +err);
+                                                  res.end(JSON.stringify({error: true}));
+                                                  return
+                                                }
+
+                                                res.end(JSON.stringify(result));
+                                            });
+
+
+
+})
+
+
+//json ricerca
+app.get("/private/api/json/cerca", function(req,res) {
+  var parolaRicercata = req.query.q;
+  var searchKeyword = ba.keyWordGenerator(parolaRicercata);
+
+
+  async.waterfall([
+        function(callback) {
+          baDB.collection('percorsi').aggregate([
+                                                    {
+                                                            $match: {
+                                                                      'scheda.publish':true,
+                                                                      'scheda.tags': { $all: searchKeyword }
+                                                                    }
+                                                     },
+                                                     {
+                                                         $lookup: {
+                                                                    from:"category",
+                                                                    localField: "scheda._idcategory",
+                                                                    foreignField: "_id",
+                                                                    as: "categoria"
+
+                                                             }
+
+                                                      },{
+                                                          $project: {  "_id":1,
+                                                                       "coordinates": {
+                                                                                          "$slice": [ "$coordinates", 0,1]
+                                                                                       },
+                                                                       "scheda.title":1,
+                                                                       "scheda.difficolta":1,
+                                                                       "scheda.lunghezza":1,
+                                                                       "scheda.pendenza":1,
+                                                                       "scheda.strada":1,
+                                                                       "categoria": {
+                                                                                       "title":1,
+                                                                                       "_id":1
+                                                                                     }
+
+                                                                     }
+                                                    }
+                                                  ]).toArray(function(err,result) {
+                                                    if(err) {
+                                                      callback(err)
+                                                      return;
+                                                    }
+
+                                                    callback(null, result)
+
+
+                                                  })
+
+        },
+        function(result,callback) {
+          if(result.length==0) {
+            baDB.collection('percorsi').aggregate([
+                                                          {
+                                                                  $match: {
+
+                                                                             $text: { $search: parolaRicercata,
+                                                                                      $caseSensitive: false},
+                                                                             'scheda.publish':true,
+                                                                          }
+                                                           },
+                                                           {
+                                                               $lookup: {
+                                                                          from:"category",
+                                                                          localField: "scheda._idcategory",
+                                                                          foreignField: "_id",
+                                                                          as: "categoria"
+
+                                                                   }
+
+                                                            },{
+                                                                $project: {  "_id":1,
+                                                                             "coordinates": {
+                                                                                                "$slice": [ "$coordinates", 0,1]
+                                                                                             },
+                                                                             "scheda.title":1,
+                                                                             "scheda.difficolta":1,
+                                                                             "scheda.lunghezza":1,
+                                                                             "scheda.pendenza":1,
+                                                                             "scheda.strada":1,
+                                                                             "categoria": {
+                                                                                             "title":1,
+                                                                                             "_id":1
+                                                                                           }
+
+                                                                           }
+                                                          }
+
+
+                                                  ]).toArray(
+                                                    function(err,result) {
+                                                    if(err) {
+                                                      callback(err)
+                                                      return;
+                                                    }
+
+                                                    callback(null, result)
+
+                                                  })
+
+
+
+          } else {
+            callback(null,result)
+          }
+
+        }],
+        function(err, result) {
+          res.header("Access-Control-Allow-Origin", "http://localhost:8080/");
+          res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+          res.setHeader('Content-Type', 'application/json');
+
+           if (err || result.length==0) {
+             console.log("Errore /private/api/json/all/ ->" +err);
+             res.end(JSON.stringify({error: true}));
+             return
+           }
+
+           res.end(JSON.stringify(result));
+
+        }
+
+
+  )
+})
+
+//json annunci scheda
+//annunci per percorso
+app.post("/private/api/json/annunci", function(req,res) {
+  var x1 = Number((req.body.lat1).trim());
+  var y1 = Number((req.body.lng1).trim());
+  var x2 = Number((req.body.lat2).trim());
+  var y2 = Number((req.body.lng2).trim());
+
+
+  //carico gli annunci all'interno delle coordinate
+  baDB.collection('annunci').find({
+     "coordinates": {
+       $geoWithin: {
+          $geometry: {
+             type: "Polygon" ,
+             coordinates: [
+               [ [x1,y1],[x2,y1],[x2, y2],[x1,y2],[x1,y1] ]
+             ]
+          }
+        }
+       },"publish":true },
+      {_id:1, "title":1, "text":1, "dominiovisualizzato":true, "coordinates":1}
+   ).sort({"impression":1})
+    .limit(5)
+     .toArray(function(err,result) {
+     res.header("Access-Control-Allow-Origin", "http://localhost:8080/");
+     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+     res.setHeader('Content-Type', 'application/json');
+
+      if (err) {
+        console.log("Errore /private/api/json/all/ ->" +err);
+        res.end(JSON.stringify({error: true}));
+        return
+      }
+
+      var idAnnunci =[];
+      result.forEach(function(a) {
+            idAnnunci.push(a['_id'])
+      })
+
+
+      //incremento di 1 le impression delle pubblicità
+      baDB.collection("annunci").updateMany(
+                          {_id: {$in:idAnnunci}},
+                         {$inc: { 'impression': 1}}
+                       )
+
+      res.end(JSON.stringify(result));
+  });
+
+})
+
+//json per caricare tutti i percorsi di una categoria
+app.get("/private/api/json/category/:slag_category", function(req,res) {
+  var idCategory = req.params.slag_category
+  baDB.collection('percorsi').aggregate([
+                                                      {
+                                                              $match: {
+                                                                        'scheda.publish':true,
+                                                                      }
+                                                       },
+                                                       {
+                                                           $lookup: {
+                                                                      from:"category",
+                                                                      localField: "scheda._idcategory",
+                                                                      foreignField: "_id",
+                                                                      as: "categoria"
+
+                                                               }
+
+                                                        },{
+                                                         $project: {  "_id":1,
+                                                                      "coordinates": {
+                                                                                         "$slice": [ "$coordinates", 0,1]
+                                                                                      },
+                                                                      "scheda.title":1,
+                                                                      "scheda.difficolta":1,
+                                                                      "scheda.lunghezza":1,
+                                                                      "scheda.pendenza":1,
+                                                                      "scheda.strada":1,
+                                                                      "categoria": {
+                                                                                      "title":1,
+                                                                                      "_id":1
+                                                                                    }
+
+                                                                    }
+
+                                                      },
+                                                      {
+                                                              $match: {
+                                                                        'categoria._id':idCategory
+                                                                      }
+                                                       },
+                                                       { $sort: {
+                                                                 "scheda.title":1
+                                                                 }
+                                                       }
+                                             ]).toArray(function(err,result) {
+                                               res.header("Access-Control-Allow-Origin", "http://localhost:8080/");
+                                               res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+                                               res.setHeader('Content-Type', 'application/json');
+
+                                                if (err || result.length==0) {
+                                                  console.log("Errore /private/api/json/all/ ->" +err);
+                                                  res.end(JSON.stringify({error: true}));
+                                                  return
+                                                }
+
+                                                res.end(JSON.stringify(result));
+                                            });
+
+})
+
+//upload segnalazioni
+app.post("/private/api/json/segnalazioni/upload", function(req,res) {
+  var tipoSegnalazione = Number((req.body.tipoSegnalazione).trim());
+  var lat = Number((req.body.lat).trim());
+  var lng = Number((req.body.lng).trim());
+  var percorso = (req.body.idPercorso).trim()
+
+  if (isNaN(tipoSegnalazione) || isNaN(lat) || isNaN(lng) || tipoSegnalazione == null || lat==null || lng == null || percorso == null){
+    red.end(JSON.stringify({code: "error"}))
+    //-> err
+    return
+  }
+
+  baDB.collection("alert").insert({type:"Point", coordinates: [lat,lng], data: {data: new Date(Date.now()), type: tipoSegnalazione, _idPercorso: percorso}}, function(err,result){
+                                                                                                                                                              res.header("Access-Control-Allow-Origin", "http://localhost:8080/");
+                                                                                                                                                              res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+                                                                                                                                                              res.setHeader('Content-Type', 'application/json');
+
+
+                                                                                                                                                              if(err) {
+                                                                                                                                                                  red.end(JSON.stringify({code: "error"}));
+                                                                                                                                                                  return
+                                                                                                                                                              }
+
+                                                                                                                                                                res.end(JSON.stringify({code: "ok"}))
+                                                                                                                                                          });
+
+
+})
+
+//download segnalazioni
+app.get("/private/api/json/segnalazioni/:slag_percorso", function(req,res) {
+  var idPercorso = req.params.slag_percorso;
+
+  //carico gli alert specifici del percorsi
+  baDB.collection('alert').find({"data._idPercorso" : idPercorso}, {type:0, _id:0, "data.data":0, "data._idPercorso":0})
+                          .toArray(function(err, result) {
+                            res.header("Access-Control-Allow-Origin", "http://localhost:8080/");
+                            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+                            res.setHeader('Content-Type', 'application/json');
+
+
+                            if (err) {
+                              res.end(JSON.stringify({code: "error"}));
+                              console.log("errore in json alert percorso " + idPercorso);
+                              return
+                            }
+
+                            if(result.length==0) {
+                                res.end(JSON.stringify({code: 0}));
+                                return
+                            }
+
+                              res.end(JSON.stringify(result));
+
+                          })
+
+})
+
+//download attivita bar e parcheggi
+app.get("/private/api/json/attivita/:slag_percorso", function(req,res) {
+  var idPercorso = req.params.slag_percorso;
+
+  //carico gli alert specifici del percorsi
+  baDB.collection('attivita').find({"_idPercorso" : idPercorso}, {_id:0, "_idPercorso":0, "location.type":0})
+                          .toArray(function(err, result) {
+                            res.header("Access-Control-Allow-Origin", "http://localhost:8080/");
+                            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+                            res.setHeader('Content-Type', 'application/json');
+
+
+                            if (err) {
+                              res.end(JSON.stringify({code: "error"}));
+                              console.log("errore in json alert percorso " + idPercorso);
+                              return
+                            }
+
+                            if(result.length==0) {
+                                res.end(JSON.stringify({code: 0}));
+                                return
+                            }
+
+                              res.end(JSON.stringify(result));
+
+                          })
+
+})
+
+
+
+app.post("/private/api/json/commento/upload/", function(req,res) {
+  var autore = (req.body.autore).trim();
+  var idPercorso = (req.body._idPercorso).trim();
+  var mail = (req.body.mail).trim();
+  var commento = (req.body.commento).trim();
+  var tappa = Number((req.body.tappa).trim());
+  var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  var headers = req.header['user-agent'];
+  var data = new Date(Date.now());
+  var referrer = req.header('Referer');
+  var pass = "spam"
+
+  //1 type: 1 dati non validi
+  //2  type 2 SPAM
+  // 3 type3  ok
+  // 4 type 4 errore sistema
+
+  //se c'è qualche dato null ritorno un errore
+  if (autore == "" || idPercorso == "" || mail == "" || isNaN(tappa) || autore == null || idPercorso == null || mail == null ) {
+    res.end(JSON.stringify({code: 1}));
+    return;
+  }
+
+  //controllo che il messaggio non sia spam mediante akismet-api
+  //usare aync
+  //1 controllo se è spam
+  //2 inserisco in db
+  //3 ritorno il risultato
+  async.waterfall([
+    function(callback) {
+      clientAki.checkSpam({
+                          user_ip : ip,
+                          user_agent : headers,
+                          referrer : referrer,
+                          comment_author : autore,
+                          comment_author_email : mail,
+                          comment_content : commento,
+                        }, function(err, spam) {
+                                                if (err) {
+                                                  callback(err);
+                                                };
+                                                if (spam) {
+                                                  callback(null, "spam");
+                                                } else {
+                                                  callback(null,"ok");
+                                                }
+
+                        });
+    }, function(spam, callback) {
+      pass = spam;
+
+      //striptags
+      autore =  striptags(autore);
+      mail = striptags(mail);
+      commento = striptags(commento);
+      commento = commento.replace("\n", "<br/>");
+
+      //inserisco in db
+      baDB.collection("commenti").insert({_idPercorso: idPercorso, data: data, autore: autore, mail: mail, commento: commento, status: pass, tappa: tappa, ip: ip}, function(err,result) {
+                                                                                                                                                                                          if (err) {
+                                                                                                                                                                                              callback(err)
+                                                                                                                                                                                              return
+                                                                                                                                                                                          }
+
+                                                                                                                                                                                          callback(null,result)
+                                                                                                                                                                                        })
+
+    }
+
+  ],function (err, result) {
+    res.header("Access-Control-Allow-Origin", "http://localhost:8080/");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.setHeader('Content-Type', 'application/json');
+
+
+    if(err) {
+      console.log("errore inserimento commento ->" + err);
+      res.end(JSON.stringify({code: 4}))
+      return
+    }
+    if(result.result.ok && pass=="spam") {
+        res.end(JSON.stringify({code: 2}));
+        return;
+    };
+
+     res.end(JSON.stringify({code: 3}));
+  })
+
+
+})
+
+//
+
+//json per caricare i commenti di un percorso
+app.get("/private/api/json/commenti/:slag_percorso/", function(req,res) {
+  var idPercorso = req.params.slag_percorso;
+
+
+
+                           baDB.collection("commenti").find({_idPercorso: idPercorso, status: "ok"}, {data:1,autore:1,commento:1,tappa:1,_id:0})
+                                                      .sort({data: -1})
+                                                      .toArray(function(err, result) {
+                                                       res.header("Access-Control-Allow-Origin", "http://localhost:8080/");
+                                                       res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+                                                       res.setHeader('Content-Type', 'application/json');
+
+                                                       if (err) {
+                                                         console.log("Errore /private/api/json/commenti/"+idPercorso +" ->" +err);
+                                                         res.end(JSON.stringify({error: true}));
+                                                         return
+                                                       }
+
+                                                       if(result.length==0) {
+                                                         res.end(JSON.stringify({commenti: 0}));
+                                                       }
+
+                                                       res.end(JSON.stringify(result));
+
+                                                    })
+})
+
+
+
+//json per caricare tutti i percorsi di una categoria
+app.get("/private/api/json/:slag_category/:slag_percorso/", function(req,res) {
+  var idPercorso = req.params.slag_percorso;
+  var idCategory = req.params.slag_category;
+
+
+
+                           baDB.collection("percorsi").find({_id: idPercorso, "scheda._idcategory": idCategory, "scheda.publish": true}, {"scheda.tags":0, "scheda.view":0})
+                                                      .toArray(function(err, result) {
+                                                       res.header("Access-Control-Allow-Origin", "http://localhost:8080/");
+                                                       res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+                                                       res.setHeader('Content-Type', 'application/json');
+
+                                                       if (err || result.length==0) {
+                                                         console.log("Errore /private/api/json/singolopercorso ->" +err);
+                                                         res.end(JSON.stringify({error: true}));
+                                                         return
+                                                       }
+
+                                                       res.end(JSON.stringify(result));
+
+                                                    })
+})
+
+
+
+
+
+//in caso di URI non definiti -> redirect con errore 404
+app.get("*", function(req,res) {
+  res.redirect("/404")
+})
+
+//cronjop per eliminare gli alert ogni 60 gg
+//alle 2 di ogni notte pulizia degli alert più vecchi di 60 gg
+new CronJob('00 00 02 * * *', function() {
+  var dataAttuale = new Date(Date.now())
+  var data60gg = new Date(dataAttuale-(24*60*60*1000*60))
+
+   baDB.collection("alert").remove({"data.data": {$lt: data60gg}})
+
+  console.log("Pulizia degli alert minori del " + data60gg);
+}, null, true);
+
 
 
 app.listen(port);
