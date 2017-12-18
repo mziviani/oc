@@ -513,7 +513,7 @@ app.get("/", function(req,res) {
 
   var idCookie = req.cookies.sessionid;
 
-  async.waterfall([
+  /*async.waterfall([
         function(callback) {
           baDB.collection('category').aggregate([
                                                    {
@@ -964,7 +964,8 @@ app.get("/", function(req,res) {
                                                            })
          })
 
-
+*/
+res.end("ciao")
 });
 
 
