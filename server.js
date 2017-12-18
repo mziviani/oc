@@ -98,10 +98,11 @@ app.use(express.static(__dirname + "/template"));
 
 //override per rendere compatibile CRUD con i browser più vecchi per chiamate ajax
 //pag 131
+/*
 app.use("/private/api/json/:slag_percorso", methodOverride());
 app.use("/private/api/json/all", methodOverride());
 app.use("/private/api/json/commento/upload", methodOverride());
-
+*7
 //upload commenti
 app.use(bodyParser.urlencoded({ extended: false }))
 
@@ -562,7 +563,7 @@ app.get("/:slag_category/:slag_percorso",function(req,res) {
 //INDEX
 app.get("/", function(req,res) {
 
-  var idCookie = req.cookies.sessionid;
+/*  var idCookie = req.cookies.sessionid;
 
   async.waterfall([
         function(callback) {
@@ -1013,7 +1014,8 @@ app.get("/", function(req,res) {
                                                              categoryObj: category,
                                                              annunciObj: annunci
                                                            })
-         })
+         })*/
+         res.end("Ciao")
 
 
 });
