@@ -21,7 +21,7 @@ app.set("view engine", "ejs");
 
 
 //connesione al db
-var url = 'mongodb://localhost:27017/Bikeaway';
+var url = 'mongodb://mziviani:ziviteo@ds161136.mlab.com:61136/bikeaway';
 var baDB;
 mongoClient.connect(url, function(err, db) {
   if (err) {
