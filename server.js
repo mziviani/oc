@@ -563,7 +563,7 @@ app.get("/:slag_category/:slag_percorso",function(req,res) {
 //INDEX
 app.get("/", function(req,res) {
 
-/*  var idCookie = req.cookies.sessionid;
+  var idCookie = req.cookies.sessionid;
 
   async.waterfall([
         function(callback) {
@@ -1014,8 +1014,7 @@ app.get("/", function(req,res) {
                                                              categoryObj: category,
                                                              annunciObj: annunci
                                                            })
-         })*/
-         res.end("Ciao")
+         })
 
 
 });
