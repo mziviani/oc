@@ -358,7 +358,7 @@ function definisciDistanzePercorsoGPS(latA,lngA, latB,lngB) {
 			 default:
 					 img='pinhome.png'
 			}
-			var url = 'http://localhost:8080/images/'+img;
+			var url = 'https://bikeaway.herokuapp.com/images/'+img;
 			return url;
 		 }
 
