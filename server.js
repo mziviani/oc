@@ -1002,7 +1002,7 @@ app.get("/private/api/json/all/", function(req,res) {
                                                                     }
                                                       }
                                              ]).toArray(function(err,result) {
-                                               res.header("Access-Control-Allow-Origin", "http://localhost:8080/");
+                                               res.header("Access-Control-Allow-Origin", "https://bikeaway.herokuapp.com/");
                                                res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
                                                res.setHeader('Content-Type', 'application/json');
 
@@ -1131,7 +1131,7 @@ app.get("/private/api/json/cerca", function(req,res) {
 
         }],
         function(err, result) {
-          res.header("Access-Control-Allow-Origin", "http://localhost:8080/");
+          res.header("Access-Control-Allow-Origin", "https://bikeaway.herokuapp.com/");
           res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
           res.setHeader('Content-Type', 'application/json');
 
@@ -1174,7 +1174,7 @@ app.post("/private/api/json/annunci", function(req,res) {
    ).sort({"impression":1})
     .limit(5)
      .toArray(function(err,result) {
-     res.header("Access-Control-Allow-Origin", "http://localhost:8080/");
+     res.header("Access-Control-Allow-Origin", "https://bikeaway.herokuapp.com/");
      res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
      res.setHeader('Content-Type', 'application/json');
 
@@ -1247,7 +1247,7 @@ app.get("/private/api/json/category/:slag_category", function(req,res) {
                                                                  }
                                                        }
                                              ]).toArray(function(err,result) {
-                                               res.header("Access-Control-Allow-Origin", "http://localhost:8080/");
+                                               res.header("Access-Control-Allow-Origin", "https://bikeaway.herokuapp.com/");
                                                res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
                                                res.setHeader('Content-Type', 'application/json');
 
@@ -1276,7 +1276,7 @@ app.post("/private/api/json/segnalazioni/upload", function(req,res) {
   }
 
   baDB.collection("alert").insert({type:"Point", coordinates: [lat,lng], data: {data: new Date(Date.now()), type: tipoSegnalazione, _idPercorso: percorso}}, function(err,result){
-                                                                                                                                                              res.header("Access-Control-Allow-Origin", "http://localhost:8080/");
+                                                                                                                                                              res.header("Access-Control-Allow-Origin", "https://bikeaway.herokuapp.com/");
                                                                                                                                                               res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
                                                                                                                                                               res.setHeader('Content-Type', 'application/json');
 
@@ -1299,7 +1299,7 @@ app.get("/private/api/json/segnalazioni/:slag_percorso", function(req,res) {
   //carico gli alert specifici del percorsi
   baDB.collection('alert').find({"data._idPercorso" : idPercorso}, {type:0, _id:0, "data.data":0, "data._idPercorso":0})
                           .toArray(function(err, result) {
-                            res.header("Access-Control-Allow-Origin", "http://localhost:8080/");
+                            res.header("Access-Control-Allow-Origin", "https://bikeaway.herokuapp.com/");
                             res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
                             res.setHeader('Content-Type', 'application/json');
 
@@ -1328,7 +1328,7 @@ app.get("/private/api/json/attivita/:slag_percorso", function(req,res) {
   //carico gli alert specifici del percorsi
   baDB.collection('attivita').find({"_idPercorso" : idPercorso}, {_id:0, "_idPercorso":0, "location.type":0})
                           .toArray(function(err, result) {
-                            res.header("Access-Control-Allow-Origin", "http://localhost:8080/");
+                            res.header("Access-Control-Allow-Origin", "https://bikeaway.herokuapp.com/");
                             res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
                             res.setHeader('Content-Type', 'application/json');
 
@@ -1422,7 +1422,7 @@ app.post("/private/api/json/commento/upload/", function(req,res) {
     }
 
   ],function (err, result) {
-    res.header("Access-Control-Allow-Origin", "http://localhost:8080/");
+    res.header("Access-Control-Allow-Origin", "https://bikeaway.herokuapp.com/");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     res.setHeader('Content-Type', 'application/json');
 
@@ -1454,7 +1454,7 @@ app.get("/private/api/json/commenti/:slag_percorso/", function(req,res) {
                            baDB.collection("commenti").find({_idPercorso: idPercorso, status: "ok"}, {data:1,autore:1,commento:1,tappa:1,_id:0})
                                                       .sort({data: -1})
                                                       .toArray(function(err, result) {
-                                                       res.header("Access-Control-Allow-Origin", "http://localhost:8080/");
+                                                       res.header("Access-Control-Allow-Origin", "https://bikeaway.herokuapp.com/");
                                                        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
                                                        res.setHeader('Content-Type', 'application/json');
 
@@ -1484,7 +1484,7 @@ app.get("/private/api/json/:slag_category/:slag_percorso/", function(req,res) {
 
                            baDB.collection("percorsi").find({_id: idPercorso, "scheda._idcategory": idCategory, "scheda.publish": true}, {"scheda.tags":0, "scheda.view":0})
                                                       .toArray(function(err, result) {
-                                                       res.header("Access-Control-Allow-Origin", "http://localhost:8080/");
+                                                       res.header("Access-Control-Allow-Origin", "https://bikeaway.herokuapp.com/");
                                                        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
                                                        res.setHeader('Content-Type', 'application/json');
 
