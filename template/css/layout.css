@@ -949,5 +949,8 @@ p.tagsmap a {
 p.tagsmap a:hover {
   color: #ffc752;
 }
-/*************** pag informative *************/
-#informativo
+
+#loader {
+  text-align: center;
+  margin-top: 100px;
+}
