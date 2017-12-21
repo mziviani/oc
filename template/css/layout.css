@@ -425,6 +425,7 @@ body {
  border-style: none;
  height: 30px;
  padding: 0px 10px 0px 10px;
+ border-radius: 0px;
 }
 #piede div.row section button:hover {
   background-color: #ffe9ba;
@@ -752,6 +753,8 @@ body {
 #scheda #content #commenti  #listacommenti .corpo-commento p {
   font-size: 13px;
   margin: 0px 0px 16px 0px;
+  width: 90%;
+  float: left;
 }
 #commenti  #listacommenti .corpo-commento .tappa {
   border-radius: 50%;

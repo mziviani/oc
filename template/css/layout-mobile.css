@@ -103,7 +103,7 @@
 #commenti div div #menu2 a,
 #commenti .corpo-commento {
   font-size: 1.3rem;
-  width: 100%;
+/*  width: 100%;*/
   display: table;
   margin-bottom: 15px;
 }
